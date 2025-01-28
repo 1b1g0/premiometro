@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Premiação</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #50b748;
+        }
+
+        .contador {
+            display: flex;
+            font-size: 3rem;
+            background: #0054a5;
+            color: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            padding: 0 10px; 
+        }
+        .digito, .fixo {
+            width: 50px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-right: 0px solid #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="contador" id="contador"></div>
+    <script>
+        const valorTotal = 10389182.32; // Valor fixo inicial
+        const intervalo = 5000; // 5 segundos
+        const randomizacoes = 15; // Número de randomizações
+
+        function formatarValor(valor) {
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL'});
+        }
+        function criarDigitos(valor) {
+            const digitos = valor.toString().split('');
+            const contador = document.getElementById('contador');
+            contador.innerHTML = '';
+            digitos.forEach(digito => {
+                const span = document.createElement('span');
+                span.className = /\d/.test(digito)? 'digito' : 'fixo';
+                span.textContent = digito;
+                contador.appendChild(span);
+            });
+        }
+        function randomizarDigitos() {
+            const contador = document.getElementById('contador');
+            const digitos = contador.querySelectorAll('.digito');
+            for (let i = 0; i < randomizacoes; i++) {
+                let j = 0;
+                setTimeout(() => {
+                    digitos.forEach(digito => {
+                      digito.textContent = Math.floor(Math.random() * 10);
+                    });
+                }, i * 100); // 0,1 segundo de exibição para cada número randomizado
+            }
+        }
+        function atualizarContador() {
+            randomizarDigitos();
+            setTimeout(() => {
+                criarDigitos(formatarValor(valorTotal));
+                setTimeout(atualizarContador, intervalo);
+            }, randomizacoes * 100); // Ajuste do tempo total de randomização
+        }
+        criarDigitos(formatarValor(valorTotal));
+        setTimeout(atualizarContador, intervalo);
+    </script>
+</body>
+</html>
